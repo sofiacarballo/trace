@@ -237,12 +237,110 @@ class RoleTest extends TestCase
         $response->assertStatus(302);
     }
 
-    /*public function test_if_admin_can_delete_a_role()
+    public function test_if_admin_can_delete_a_role()
     {
-        $this->artisan('db:seed');
-        $user = User::where('id', 1)->first();
-        $response = $this->actingAs($user)->delete('/role', [4]);
+        $user = new User();
+        $admin = $user->createTestingUsers('admin');
+
+        $role=factory(Role::class)->create(['id'=>'4','name'=>'Guest', 'description'=>'invitado']);
+        $response = $this->actingAs($admin)->delete('/role/'.$role->id);
+
         $this->assertDatabaseMissing('roles', ['name'=>'Guest', 'description'=>'invitado']);
         $response->assertStatus(302);
-    }*/
+    }
+
+    public function test_if_admin_can_edit_a_role()
+    {
+        $user = new User();
+        $admin = $user->createTestingUsers('admin');
+
+        $role=factory(Role::class)->create(['id'=>'4','name'=>'Guest', 'description'=>'invitado']);
+        $updatedRole=['name'=>'Guest', 'description'=>'Otro'];
+
+        $response = $this->actingAs($admin)->patch('/role/'.$role->id, $updatedRole);
+
+        $this->assertDatabaseHas('roles', ['name'=>'Guest', 'description'=>'Otro']);
+        $response->assertStatus(302);
+    }
+
+    public function test_if_associated_cant_create_a_role()
+    {
+        $user = new User();
+        $admin = $user->createTestingUsers('associated');
+
+        $response = $this->actingAs($admin)->post('/role', [
+                'name'=>'Guest', 
+                'description'=>'invitado'
+            ]);
+            
+        $this->assertDatabaseMissing('roles', ['name'=>'Guest', 'description'=>'invitado']);
+        $response->assertStatus(403);
+    }
+
+    public function test_if_associated_cant_delete_a_role()
+    {
+        $user = new User();
+        $admin = $user->createTestingUsers('associated');
+
+        $role=factory(Role::class)->create(['id'=>'4','name'=>'Guest', 'description'=>'invitado']);
+        $response = $this->actingAs($admin)->delete('/role/'.$role->id);
+
+        $this->assertDatabaseHas('roles', ['name'=>'Guest', 'description'=>'invitado']);
+        $response->assertStatus(403);
+    }
+
+    public function test_if_associated_cant_edit_a_role()
+    {
+        $user = new User();
+        $admin = $user->createTestingUsers('associated');
+
+        $role=factory(Role::class)->create(['id'=>'4','name'=>'Guest', 'description'=>'invitado']);
+        $updatedRole=['name'=>'Guest', 'description'=>'Invitad@'];
+
+        $response = $this->actingAs($admin)->patch('/role/'.$role->id, $updatedRole);
+
+        $this->assertDatabaseMissing('roles', ['name'=>'Guest', 'description'=>'Invitad@']);
+        $this->assertDatabaseHas('roles', ['name'=>'Guest', 'description'=>'invitado']);
+        $response->assertStatus(403);
+    }
+    public function test_if_professional_cant_create_a_role()
+    {
+        $user = new User();
+        $admin = $user->createTestingUsers('professional');
+
+        $response = $this->actingAs($admin)->post('/role', [
+                'name'=>'Guest', 
+                'description'=>'invitado'
+            ]);
+            
+        $this->assertDatabaseMissing('roles', ['name'=>'Guest', 'description'=>'invitado']);
+        $response->assertStatus(403);
+    }
+
+    public function test_if_professional_cant_delete_a_role()
+    {
+        $user = new User();
+        $admin = $user->createTestingUsers('professional');
+
+        $role=factory(Role::class)->create(['id'=>'4','name'=>'Guest', 'description'=>'invitado']);
+        $response = $this->actingAs($admin)->delete('/role/'.$role->id);
+
+        $this->assertDatabaseHas('roles', ['name'=>'Guest', 'description'=>'invitado']);
+        $response->assertStatus(403);
+    }
+
+    public function test_if_professional_cant_edit_a_role()
+    {
+        $user = new User();
+        $admin = $user->createTestingUsers('professional');
+
+        $role=factory(Role::class)->create(['id'=>'4','name'=>'Guest', 'description'=>'invitado']);
+        $updatedRole=['name'=>'Guest', 'description'=>'Invitad@'];
+
+        $response = $this->actingAs($admin)->patch('/role/'.$role->id, $updatedRole);
+
+        $this->assertDatabaseMissing('roles', ['name'=>'Guest', 'description'=>'Invitad@']);
+        $this->assertDatabaseHas('roles', ['name'=>'Guest', 'description'=>'invitado']);
+        $response->assertStatus(403);
+    }
 }
