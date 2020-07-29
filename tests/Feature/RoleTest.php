@@ -15,13 +15,11 @@ class RoleTest extends TestCase
 
     public function test_if_user_has_admin_role()
     {
-        $adminRole = factory(Role::class)->create(['id'=>'1','name'=>'admin', 'description'=>'Administrador del sitio']);
-        $adminRoleId = $adminRole->id;
+        $user = new User();
+        $admin = $user->createTestingUsers('admin');
+        
+        $userRole=$admin->actualRoles();
 
-        $user = factory(User::class)->create();
-        $user->roles()->sync([$adminRoleId]);
-
-        $userRole=$user->actualRoles();
         $expected = ['admin'];
         
         $this->assertNotNull($userRole);
@@ -30,13 +28,11 @@ class RoleTest extends TestCase
 
     public function test_if_user_has_professional_role()
     {
-        $professionalRole = factory(Role::class)->create(['id'=>'2','name'=>'professional', 'description'=>'Administrador del sitio']);
-        $professionalRoleId = $professionalRole->id;
+        $user = new User();
+        $admin = $user->createTestingUsers('professional');
+        
+        $userRole=$admin->actualRoles();
 
-        $user = factory(User::class)->create();
-        $user->roles()->sync([$professionalRoleId]);
-
-        $userRole=$user->actualRoles();
         $expected = ['professional'];
         
         $this->assertNotNull($userRole);
@@ -45,14 +41,11 @@ class RoleTest extends TestCase
 
     public function test_if_user_has_associated_role()
     {
-        $associatedRole = factory(Role::class)->create(['id'=>'3','name'=>'associated', 'description'=>'Administrador del sitio']);
-        $associatedRoleId = $associatedRole->id;
+        $user = new User();
+        $admin = $user->createTestingUsers('associated');
+        
+        $userRole=$admin->actualRoles();
 
-        $user = factory(User::class)->create();
-        $user->roles()->sync([$associatedRoleId]);
-
-
-        $userRole=$user->actualRoles();
         $expected = ['associated'];
         
         $this->assertNotNull($userRole);
@@ -103,73 +96,83 @@ class RoleTest extends TestCase
 
     public function test_if_associated_cant_access_role_index()
     {
-        $this->artisan('db:seed');
-        $user = User::where('id', 20)->first();
-        $response = $this->actingAs($user)->get('/role');
+        $user = new User();
+        $associated = $user->createTestingUsers('associated');
+        
+        $response = $this->actingAs($associated)->get('/role');
         $response->assertStatus(403);
     }
 
     public function test_if_associated_cant_access_role_show()
     {
-        $this->artisan('db:seed');
-        $user = User::where('id', 20)->first();
-        $response = $this->actingAs($user)->get('/role/2');
+        $user = new User();
+        $associated = $user->createTestingUsers('associated');
+        
+        $response = $this->actingAs($associated)->get('/role/2');
         $response->assertStatus(403);
     }
 
     public function test_if_associated_cant_access_role_edit()
     {
-        $this->artisan('db:seed');
-        $user = User::where('id', 20)->first();
-        $response = $this->actingAs($user)->get('/role/2/edit');
+        $user = new User();
+        $associated = $user->createTestingUsers('associated');
+        
+        $response = $this->actingAs($associated)->get('/role/2/edit');
         $response->assertStatus(403);
     }
 
     public function test_if_associated_cant_access_role_create()
     {
-        $this->artisan('db:seed');
-        $user = User::where('id', 20)->first();
-        $response = $this->actingAs($user)->get('/role/create');
+        $user = new User();
+        $associated = $user->createTestingUsers('associated');
+        
+        $response = $this->actingAs($associated)->get('/role/create');
         $response->assertStatus(403);
     }
 
     public function test_if_professional_cant_access_role_index()
     {
-        $this->artisan('db:seed');
-        $user = User::where('id', 5)->first();
-        $response = $this->actingAs($user)->get('/role');
+        $user = new User();
+        $associated = $user->createTestingUsers('professional');
+        
+        $response = $this->actingAs($associated)->get('/role');
         $response->assertStatus(403);
     }
 
     public function test_if_professional_cant_access_role_show()
     {
-        $this->artisan('db:seed');
-        $user = User::where('id', 5)->first();
-        $response = $this->actingAs($user)->get('/role/2');
+        $user = new User();
+        $professional = $user->createTestingUsers('professional');
+        
+        $response = $this->actingAs($professional)->get('/role/2');
         $response->assertStatus(403);
     }
 
     public function test_if_professional_cant_access_role_edit()
     {
-        $this->artisan('db:seed');
-        $user = User::where('id', 5)->first();
-        $response = $this->actingAs($user)->get('/role/2/edit');
+        $user = new User();
+        $professional = $user->createTestingUsers('professional');
+        
+        $response = $this->actingAs($professional)->get('/role/2/edit');
         $response->assertStatus(403);
     }
 
     public function test_if_professional_cant_access_role_create()
     {
-        $this->artisan('db:seed');
-        $user = User::where('id', 5)->first();
-        $response = $this->actingAs($user)->get('/role/create');
+        $user = new User();
+        $professional = $user->createTestingUsers('professional');
+        
+        $response = $this->actingAs($professional)->get('/role/create');
         $response->assertStatus(403);
     }
     
     public function test_if_admin_can_access_role_index()
     {
-        $this->artisan('db:seed');
-        $user = User::where('id', 1)->first();
-        $response = $this->actingAs($user)->get('/role');
+        $user = new User();
+        $admin = $user->createTestingUsers('admin');
+        
+        $response = $this->actingAs($admin)->get('/role');
+
         $response->assertStatus(200);
         $response->assertSee('Add New');
         $response->assertSee('Modify');
@@ -181,9 +184,11 @@ class RoleTest extends TestCase
 
     public function test_if_admin_can_access_role_show()
     {
-        $this->artisan('db:seed');
-        $user = User::where('id', 1)->first();
-        $response = $this->actingAs($user)->get('/role/2');
+        $user = new User();
+        $admin = $user->createTestingUsers('admin');
+        
+        $response = $this->actingAs($admin)->get('/role/2');
+
         $response->assertStatus(200);
         $response->assertSee('Name');
         $response->assertSee('Description');
@@ -191,9 +196,10 @@ class RoleTest extends TestCase
 
     public function test_if_admin_can_access_role_edit()
     {
-        $this->artisan('db:seed');
-        $user = User::where('id', 1)->first();
-        $response = $this->actingAs($user)->get('/role/2/edit');
+          $user = new User();
+        $admin = $user->createTestingUsers('admin');
+        
+        $response = $this->actingAs($admin)->get('/role/2/edit');
         $response->assertStatus(200);
         $response->assertSee('Name');
         $response->assertSee('Description');
@@ -202,9 +208,10 @@ class RoleTest extends TestCase
 
     public function test_if_admin_can_access_role_create()
     {
-        $this->artisan('db:seed');
-        $user = User::where('id', 1)->first();
-        $response = $this->actingAs($user)->get('/role/create');
+        $user = new User();
+        $admin = $user->createTestingUsers('admin');
+        
+        $response = $this->actingAs($admin)->get('/role/create');
         $response->assertStatus(200);
         $response->assertSee('Name');
         $response->assertSee('Description');
@@ -213,9 +220,10 @@ class RoleTest extends TestCase
 
     public function test_if_admin_can_create_a_role()
     {
-        $this->artisan('db:seed');
-        $user = User::where('id', 1)->first();
-        $response = $this->actingAs($user)->post('/role', [
+        $user = new User();
+        $admin = $user->createTestingUsers('admin');
+
+        $response = $this->actingAs($admin)->post('/role', [
                 'name'=>'Guest', 
                 'description'=>'invitado'
             ]);
@@ -223,12 +231,12 @@ class RoleTest extends TestCase
         $response->assertStatus(302);
     }
 
-    public function test_if_admin_can_delete_a_role()
+    /*public function test_if_admin_can_delete_a_role()
     {
         $this->artisan('db:seed');
         $user = User::where('id', 1)->first();
         $response = $this->actingAs($user)->delete('/role', [4]);
         $this->assertDatabaseMissing('roles', ['name'=>'Guest', 'description'=>'invitado']);
         $response->assertStatus(302);
-    }
+    }*/
 }
