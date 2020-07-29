@@ -47,9 +47,11 @@ class RoleController extends Controller
     public function update(Request $request, role $role)
     {
         Gate::authorize('haveaccess','role.edit');
-        $role->update($request->all());
-        $role->permissions()->sync($request->get('permission'));
-        return redirect()->route('role.index');
+        if ($role->name != 'admin'){
+            $role->update($request->all());
+            $role->permissions()->sync($request->get('permission'));
+            return redirect()->route('role.index');
+        }
     }
 
     public function destroy(role $role)

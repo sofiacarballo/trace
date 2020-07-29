@@ -76,7 +76,6 @@ class RoleTest extends TestCase
     {
         $response = $this->get('/role/2');
         $response->assertRedirect('/login');
-        //$response->assertStatus(403);
     }
 
     public function test_if_associated_cant_access_role_index()
@@ -191,7 +190,6 @@ class RoleTest extends TestCase
         $response->assertSee('Description');
         $response->assertSee('Edit');
     }
-
 //TEST QUE DEBERIA IR ARRIBA
     public function test_if_user_has_associated_many_roles()
     {
@@ -204,7 +202,6 @@ class RoleTest extends TestCase
         $user->roles()->sync([$adminRoleId, $professionalRoleId]);
 
         $userRoles = $user->actualRoles();
-
         $expectedReturn = ['admin', 'professional'];
 
         $this->assertEquals($userRoles, $expectedReturn);
@@ -261,6 +258,21 @@ class RoleTest extends TestCase
 
         $this->assertDatabaseHas('roles', ['name'=>'Guest', 'description'=>'Otro']);
         $response->assertStatus(302);
+    }
+
+    //FALTA REFACTORIZAR ESTE TEST Y SU FUNCIONALIDAD
+    public function test_if_admin_cant_edit_its_own_role()
+    {
+        $user = new User();
+        $admin = $user->createTestingUsers('admin');
+
+        $adminRoleId=1;
+        $updatedRole=['name'=>'Guest', 'description'=>'Otro'];
+
+        $response = $this->actingAs($admin)->patch('/role/'.$adminRoleId, $updatedRole);
+
+        $this->assertDatabaseMissing('roles', ['name'=>'Guest', 'description'=>'Otro']);
+        $response->assertStatus(200);
     }
 
     public function test_if_associated_cant_create_a_role()
