@@ -28,7 +28,7 @@ class RoleController extends Controller
         Gate::authorize('haveaccess', 'role.create');
         $role=Role::create($request->all());
         $role->permissions()->sync($request->get('permission'));
-        return redirect(route('role.index'));
+        return redirect(route('role.index'))->with('status_success','Role created successfully');
     }
 
     public function show(role $role)
@@ -50,14 +50,16 @@ class RoleController extends Controller
         if ($role->name != 'admin'){
             $role->update($request->all());
             $role->permissions()->sync($request->get('permission'));
-            return redirect()->route('role.index');
+            return redirect()->route('role.index')->with('status_success','Role updated successfully');
         }
     }
 
     public function destroy(role $role)
     {
         Gate::authorize('haveaccess','role.destroy');
-        $role->delete();
-        return redirect (route('role.index'));
+        if ($role->name != 'admin'){
+            $role->delete();
+            return redirect (route('role.index'))->with('status_success','Role deleted successfully');;
+        }
     }
 }

@@ -35,6 +35,4 @@ trait UserTrait
         }
         return False;
     }
-
-
 }

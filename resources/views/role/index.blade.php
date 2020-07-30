@@ -5,6 +5,7 @@
         <div class="card">
             <div class="card-header">
                 <h1>Your roles</h1><hr>
+                @include('custom.message')
                 <a href="{{Route('role.create')}}" class="btn btn-secondary">Add New</a>
                 <a href="{{Route('home')}}" class="btn btn-secondary">Back Home</a>
             </div>

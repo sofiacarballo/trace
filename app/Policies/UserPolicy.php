@@ -28,7 +28,7 @@ class UserPolicy
         return false;
     }
 
-    public function delete(User $user, User $model, $permissionRequired=null)
+    public function destroy(User $user, User $model, $permissionRequired=null)
     {
         $adminPermission = $permissionRequired[0];
         $ownPermission = $permissionRequired[1];

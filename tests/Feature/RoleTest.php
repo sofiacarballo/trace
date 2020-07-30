@@ -52,7 +52,21 @@ class RoleTest extends TestCase
         $this->assertEquals($userRole, $expected);
     }
 
-//TEST AQUI !!
+    public function test_if_user_has_associated_many_roles()
+    {
+        $adminRole = factory(Role::class)->create(['id'=>'1','name'=>'admin', 'description'=>'Administrador del sitio']);
+        $professionalRole = factory(Role::class)->create(['id'=>'2','name'=>'professional', 'description'=>'Profesional del sitio']);
+        $adminRoleId = $adminRole->id;
+        $professionalRoleId = $professionalRole->id;
+
+        $user = factory(User::class)->create();
+        $user->roles()->sync([$adminRoleId, $professionalRoleId]);
+
+        $userRoles = $user->actualRoles();
+        $expectedReturn = ['admin', 'professional'];
+
+        $this->assertEquals($userRoles, $expectedReturn);
+    }
 
     public function test_if_unauthorized_user_cant_access_roles_index_and_gets_redirected_to_login()
     {
@@ -190,23 +204,7 @@ class RoleTest extends TestCase
         $response->assertSee('Description');
         $response->assertSee('Edit');
     }
-//TEST QUE DEBERIA IR ARRIBA
-    public function test_if_user_has_associated_many_roles()
-    {
-        $adminRole = factory(Role::class)->create(['id'=>'1','name'=>'admin', 'description'=>'Administrador del sitio']);
-        $professionalRole = factory(Role::class)->create(['id'=>'2','name'=>'professional', 'description'=>'Profesional del sitio']);
-        $adminRoleId = $adminRole->id;
-        $professionalRoleId = $professionalRole->id;
 
-        $user = factory(User::class)->create();
-        $user->roles()->sync([$adminRoleId, $professionalRoleId]);
-
-        $userRoles = $user->actualRoles();
-        $expectedReturn = ['admin', 'professional'];
-
-        $this->assertEquals($userRoles, $expectedReturn);
-    }
-//
     public function test_if_admin_can_access_role_create()
     {
         $this->artisan('db:seed');
@@ -232,6 +230,7 @@ class RoleTest extends TestCase
             
         $this->assertDatabaseHas('roles', ['name'=>'Guest', 'description'=>'invitado']);
         $response->assertStatus(302);
+        $response->assertRedirect('/role');
     }
 
     public function test_if_admin_can_delete_a_role()
@@ -244,6 +243,19 @@ class RoleTest extends TestCase
 
         $this->assertDatabaseMissing('roles', ['name'=>'Guest', 'description'=>'invitado']);
         $response->assertStatus(302);
+    }
+
+    public function test_if_admin_cant_delete_ts_own_role()
+    {
+        $user = new User();
+        $admin = $user->createTestingUsers('admin');
+
+        $roleAdminId=1;
+
+        $response = $this->actingAs($admin)->delete('/role/'.$roleAdminId);
+
+        $this->assertDatabaseHas('roles', ['name'=>'admin', 'description'=>'Administrador del sitio']);
+        $response->assertStatus(200);
     }
 
     public function test_if_admin_can_edit_a_role()
