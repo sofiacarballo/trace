@@ -9,7 +9,7 @@ section {
 }
 
 .section-bg {
-    background-color: lighten($primary, 48);
+    background-color: lighten($gray, 70);
 }
 
 .section-title {
@@ -554,49 +554,31 @@ section {
     }
 }
 
-.philosophy {
-    .content {
-        h3 {
-            font-weight: 600;
-            font-size: 26px;
-            color: $secondary;
-            padding-bottom: 20px;
-        }
-
-        p:last-child {
-            margin-bottom: 0;
-        }
-    }
-    .box-cta {
-        padding-top: 10px;
+.login {
+    h2 {
+        text-align: center;
+        color: $primary;
+        margin-top: 100px;
+        padding-bottom: 30px;
+        font-weight: 600;
     }
 
-    .quote {
-        font-size: 24px;
-        font-weight: lighter;
-        font-style: italic;
-        margin-left: 20px;
+    .box {
+        display: flex;
+        flex-direction: column;
     }
 
-    .quote-author {
-        font-weight: bold;
-        margin-left: 20px;
+    button {
+        margin: 20px 0;
     }
-}
 
-.transparency {
-    .content {
-        h3 {
-            font-weight: 600;
-            font-size: 26px;
-            color: $secondary;
-            padding-bottom: 20px;
-        }
-        h4 {
-            font-weight: 600;
-            font-size: 18px;
-            color: $secondary;
-            padding-bottom: 20px;
-        }
+    .card {
+        border: none !important;
+        box-shadow: 0 rgba(0, 0, 0, 0.3) !important;
+        transition: 0.3s !important;
+    }
+
+    label {
+        font-size: 18px;
     }
 }
