@@ -36,12 +36,12 @@ class UsersTest extends TestCase
     // public function test_Admin_can_add_a_new_user()
     // {
     //     $role = factory(Role::class)->states('Admin')->create();
-    //     $user = factory(User::class)->states('Admin')->create();
-    //     $response = $this->actingAs($user)->post('/user', [
+    //     $admin_user = factory(User::class)->states('Admin')->create();
+    //     $response = $this->actingAs($admin_user)->post('/user', [
     //         'first_name'=>'Pep',
     //         'last_name'=>'Vilanova',
     //         'email' =>'pep.vilanova@example.com',
-    //         'password' =>'password',
+    //         'password' => 'password',
     //         'phone' =>'555666777',
     //         'dni'=>'45632178Q',
     //         'tutor' =>'Selma',
@@ -56,7 +56,6 @@ class UsersTest extends TestCase
     //         'tutor' =>'Selma',
     //         'role_id' => '1'
     //     ]);
-    //     $response->assertStatus(302);
     //     $response->assertRedirect('/user');
     // }
 

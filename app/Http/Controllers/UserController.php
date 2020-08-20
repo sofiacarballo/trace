@@ -48,8 +48,8 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
-        $user = Auth::user();
-        $this->authorize('create', $user);
+        dd($user);
+        $this->authorize('create', User::class);
         $user = User::create($request->all());
         return redirect('/user')->with('status_success',"S'ha creat l'usuari correctament");
     }
