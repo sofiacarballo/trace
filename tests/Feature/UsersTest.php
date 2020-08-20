@@ -12,7 +12,7 @@ class UsersTest extends TestCase
     use RefreshDatabase;
     
     // Admin tests
-    public function test_user_role_is_not_empty()
+    public function test_admin_user_role_is_not_empty()
     {
         $role = factory(Role::class)->states('Admin')->create();
         $user = factory(User::class)->states('Admin')->create();
@@ -23,7 +23,7 @@ class UsersTest extends TestCase
         $this->assertEquals($userRole, $expectedReturn);
     }
 
-    public function test_genuine_dashboard_page_displayed_to_Admin_user()
+    public function test_genuine_dashboard_page_displayed_to_admin_user()
     {
         $role = factory(Role::class)->states('Admin')->create();
         $user = factory(User::class)->states('Admin')->create();
@@ -60,8 +60,30 @@ class UsersTest extends TestCase
     //     $response->assertRedirect('/user');
     // }
 
+    // PROFESSIONAL tests
+    public function test_professional_user_role_is_not_empty()
+    {
+        $role = factory(Role::class)->states('Professional')->create();
+        $user = factory(User::class)->states('Professional')->create();
+        $userRole = empty($user->role_id);
+        
+        $expectedReturn = false;
+
+        $this->assertEquals($userRole, $expectedReturn);
+    }
+
+    public function test_genuine_dashboard_page_displayed_to_professional_user()
+    {
+        $role = factory(Role::class)->states('Professional')->create();
+        $user = factory(User::class)->states('Professional')->create();
+        $response = $this->actingAs($user)->get('/dashboard');
+        
+        $response->assertStatus(200);
+        $response->assertSee('Selecciona en el panell');
+    }
+
     // SOCI tests
-    public function test_genuine_dashboard_page_displayed_to_Soci_user()
+    public function test_genuine_dashboard_page_displayed_to_soci_user()
     {
         $role = factory(Role::class)->states('Soci')->create();
         $user = factory(User::class)->states('Soci')->create();
