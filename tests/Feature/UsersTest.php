@@ -59,15 +59,16 @@ class UsersTest extends TestCase
     //     $response->assertStatus(302);
     //     $response->assertRedirect('/user');
     // }
-    // // Soci tests
-    // public function test_genuine_dashboard_page_displayed_to_Soci_user()
-    // {
-    //     $role = factory(Role::class)->create();
-    //     $user = factory(User::class)->states('Soci')->create();
-    //     $response = $this->actingAs($user)->get('/dashboard');
+
+    // SOCI tests
+    public function test_genuine_dashboard_page_displayed_to_Soci_user()
+    {
+        $role = factory(Role::class)->states('Soci')->create();
+        $user = factory(User::class)->states('Soci')->create();
+        $response = $this->actingAs($user)->get('/dashboard');
         
-    //     $response->assertStatus(200);
-    //     $response->assertSee('El meu pla de treball');
-    // }
+        $response->assertStatus(200);
+        $response->assertSee('El meu pla de treball');
+    }
     
 }
